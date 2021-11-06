@@ -4,12 +4,12 @@ import java.util.Scanner;
 public class SeatReservation {
 
    // Arraylist for seat reservations
-   private ArrayList<Seat> allSeats;
-   
+   private final ArrayList<Seat> allSeats;
+
    public SeatReservation() {
-       allSeats = new ArrayList<Seat>();
+      allSeats = new ArrayList<>();
    }
-   
+
    public void makeSeatsEmpty() {
       int i;
       for (i = 0; i < allSeats.size(); ++i) {
@@ -31,72 +31,57 @@ public class SeatReservation {
          allSeats.add(new Seat());
       }
    }
-   
-   public Seat getSeat(int seatNum) {
-      return allSeats.get(seatNum);
-   }   
-   
-   public void setSeat(int seatNum, Seat newSeat) {
-      allSeats.set(seatNum, newSeat); 
+
+   public void deleteSeat(int seatNum) {
+      allSeats.remove(seatNum);
    }
 
-   // Main method to use SeatReservation methods
-   public static void main (String [] args) {
-      Scanner scnr = new Scanner(System.in);
-      String usrInput = "";
+   public Seat getSeat(int seatNum) {
+      return allSeats.get(seatNum);
+   }
+
+   public void setSeat(int seatNum, Seat newSeat) {
+      allSeats.set(seatNum, newSeat);
+   }
+
+   public void makeSeatReservations(Scanner scnr) {
       String firstName, lastName;
       int amountPaid;
-      int seatNum;
       Seat newSeat;
-      SeatReservation ezReservations = new SeatReservation();
+      int seatNum;
+      System.out.print("Enter seat num: ");
+      seatNum = scnr.nextInt();
 
-      // Add 5 seat objects
-      ezReservations.addSeats(5);
+      if (!(this.getSeat(seatNum).isEmpty())) {
+         System.out.println("Seat not empty.");
+      } else {
+         System.out.print("Enter first name: ");
+         firstName = scnr.next();
+         System.out.print("Enter last name: ");
+         lastName = scnr.next();
+         System.out.print("Enter amount paid: ");
+         amountPaid = scnr.nextInt();
 
-      // Make all seats empty
-      ezReservations.makeSeatsEmpty();
+// Create new Seat object and add to the reservations
+         newSeat = new Seat();
+         newSeat.reserve(firstName, lastName, amountPaid);
+         this.setSeat(seatNum, newSeat);
+         System.out.println("Completed.");
+      }
+   }
 
-      while (!usrInput.equals("q")) {
-         System.out.println();
-         System.out.print("Enter command (p/r/q): ");
-         usrInput = scnr.next();
+   public void deleteSeatReservations(Scanner scnr) {
+      int seatNum;
+      System.out.print("Enter seat num: ");
+      seatNum = scnr.nextInt();
 
-         // Print seats
-         if (usrInput.equals("p")) { 
-            ezReservations.printSeats();
-         }
-         
-         // Reserve a seat
-         else if (usrInput.equals("r")) {
-            System.out.print("Enter seat num: ");
-            seatNum = scnr.nextInt();
-
-            if ( !(ezReservations.getSeat(seatNum).isEmpty()) ) {
-               System.out.println("Seat not empty.");
-            }
-            else {
-               System.out.print("Enter first name: ");
-               firstName = scnr.next();
-               System.out.print("Enter last name: ");
-               lastName = scnr.next();
-               System.out.print("Enter amount paid: ");
-               amountPaid = scnr.nextInt();
-
-               // Create new Seat object and add to the reservations
-               newSeat = new Seat();
-               newSeat.reserve(firstName, lastName, amountPaid); 
-               ezReservations.setSeat(seatNum, newSeat); 
-
-               System.out.println("Completed.");
-            }
-         }
-         // FIXME: Add option to delete reservations
-         else if (usrInput.equals("q")) { // Quit
-            System.out.println("Quitting.");
-         }
-         else {
-            System.out.println("Invalid command.");
-         }
+      if (this.getSeat(seatNum).isEmpty()) {
+         System.out.println("Seat is empty.");
+      } else {
+         Seat unreservedSeats;
+         unreservedSeats= this.getSeat(seatNum);
+         unreservedSeats.makeEmpty();
+         this.setSeat(seatNum, unreservedSeats);
       }
    }
 }
